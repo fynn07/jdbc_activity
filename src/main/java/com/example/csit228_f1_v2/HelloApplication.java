@@ -1,5 +1,6 @@
 package com.example.csit228_f1_v2;
 
+import java.sql.SQLException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,6 +22,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class HelloApplication extends Application {
     @Override
@@ -102,18 +104,40 @@ public class HelloApplication extends Application {
         btnLogin.setFont(Font.font(40));
         grid.add(btnLogin, 0, 3, 2, 1);
 
+        Button btnSignup = new Button("Sign Up");
+        btnSignup.setFont(Font.font(40));
+        grid.add(btnSignup, 1, 3, 2, 2);
+
+
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println("Hello");
-                try {
-                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-                    Scene s = new Scene(p);
-                    stage.setScene(s);
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                ReadData reader = new ReadData();
+                boolean valid = reader.isValid(tfUsername.getText(), pfPassword.getText());
+                if(valid){
+                    try {
+                        Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+                        Scene s = new Scene(p);
+                        stage.setScene(s);
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                else {
+                    System.out.println("Invalid Login");
+                }
+
+
+            }
+        });
+
+        btnSignup.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                InsertData data = new InsertData();
+                data.signUp(tfUsername.getText(), pfPassword.getText());
+                System.out.println("Account created");
             }
         });
 
